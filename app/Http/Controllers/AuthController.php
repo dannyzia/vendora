@@ -25,9 +25,17 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             
-            return redirect()->intended(
-                Auth::user()->isVendor() ? '/vendor/dashboard' : '/'
-            );
+            // Role-based redirect
+            $user = Auth::user();
+            
+            if ($user->isAdmin()) {
+                return redirect()->intended('/admin/dashboard');
+            } elseif ($user->isVendor()) {
+                return redirect()->intended('/vendor/dashboard');
+            } else {
+                // Customer
+                return redirect()->intended('/customer/dashboard');
+            }
         }
 
         return back()->withErrors([
@@ -60,11 +68,13 @@ class AuthController extends Controller
 
         Auth::login($user);
 
+        // Role-based redirect after registration
         if ($user->isVendor()) {
-            return redirect()->route('vendor.onboarding');
+            return redirect()->route('vendor.onboarding.index')->with('success', 'Welcome! Please complete your vendor onboarding.');
         }
 
-        return redirect('/');
+        // Customer
+        return redirect()->route('customer.dashboard')->with('success', 'Welcome to Vendora! Start shopping now.');
     }
 
     public function logout(Request $request)
