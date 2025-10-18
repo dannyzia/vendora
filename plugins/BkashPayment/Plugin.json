@@ -1,0 +1,41 @@
+{
+  "name": "bkash-payment",
+  "version": "1.0.0",
+  "displayName": "bKash Payment Gateway",
+  "description": "Accept payments via bKash mobile banking - the most popular payment method in Bangladesh",
+  "author": "Vendora Team",
+  "authorUrl": "https://vendora.com.bd",
+  "license": "MIT",
+  "requires": {
+    "core": ">=1.0.0",
+    "php": ">=8.1",
+    "plugins": []
+  },
+  "provides": ["payment-method"],
+  "hooks": [
+    "checkout.payment_methods",
+    "order.payment_process",
+    "order.refund_process",
+    "admin.menu",
+    "vendor.dashboard.widgets"
+  ],
+  "settings": true,
+  "price": {
+    "type": "free",
+    "tier": "basic"
+  },
+  "features": [
+    "Tokenized payments for subscriptions",
+    "Automatic refunds",
+    "Payment verification",
+    "Transaction history",
+    "Sandbox mode for testing"
+  ],
+  "screenshots": [
+    "assets/images/screenshot-1.png",
+    "assets/images/screenshot-2.png"
+  ],
+  "changelog": {
+    "1.0.0": "Initial release with core bKash integration"
+  }
+}
