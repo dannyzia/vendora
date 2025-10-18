@@ -1,0 +1,75 @@
+vendora-marketplace/
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Vendor/
+│   │   │   │   ├── OnboardingController.php      ← NEW (Main onboarding logic)
+│   │   │   │   └── ProfileController.php         ← NEW (Post-approval profile)
+│   │   │   └── Admin/
+│   │   │       └── VendorApplicationController.php ← NEW (Admin review)
+│   │   │
+│   │   ├── Requests/
+│   │   │   ├── VendorApplicationRequest.php      ← NEW (Step 1 validation)
+│   │   │   ├── VendorDocumentRequest.php         ← NEW (Step 2 validation)
+│   │   │   └── VendorProfileRequest.php          ← NEW (Step 4 validation)
+│   │   │
+│   │   └── Middleware/
+│   │       ├── EnsureVendorRole.php              ← NEW (Vendor auth)
+│   │       └── EnsureAdminRole.php               ← NEW (Admin auth)
+│   │
+│   ├── Services/
+│   │   ├── OtpService.php                        ← NEW (WhatsApp/SMS OTP)
+│   │   ├── FileUploadService.php                 ← NEW (Document upload)
+│   │   └── VendorService.php                     ← NEW (Business logic)
+│   │
+│   ├── Notifications/
+│   │   ├── VendorApplicationSubmitted.php        ← NEW (To vendor)
+│   │   ├── NewVendorApplication.php              ← NEW (To admin)
+│   │   ├── VendorApplicationApproved.php         ← NEW (To vendor)
+│   │   └── VendorApplicationRejected.php         ← NEW (To vendor)
+│   │
+│   └── Models/
+│       ├── Vendor.php                            ✅ EXISTS (add methods)
+│       └── User.php                              ✅ EXISTS (add methods)
+│
+├── database/
+│   ├── migrations/
+│   │   ├── 2025_01_01_000001_create_users_table.php        ✅ EXISTS
+│   │   ├── 2025_01_01_000002_create_vendors_table.php      ✅ EXISTS
+│   │   ├── 2025_01_15_create_otp_verifications_table.php   ← NEW
+│   │   └── 2025_01_15_create_subscription_plans_table.php  ← NEW
+│   │
+│   └── seeders/
+│       ├── AdminSeeder.php                       ← NEW (Create admin user)
+│       ├── CategorySeeder.php                    ← NEW (Product categories)
+│       └── SubscriptionPlanSeeder.php            ← NEW (Free/Basic/Pro plans)
+│
+├── resources/
+│   └── js/
+│       ├── Pages/
+│       │   ├── Vendor/
+│       │   │   └── Onboarding/
+│       │   │       ├── Step1Application.vue      ← NEW (Business info form)
+│       │   │       ├── Step2Documents.vue        ← NEW (KYC upload)
+│       │   │       ├── Step3Verification.vue     ← NEW (OTP verify)
+│       │   │       ├── Step4Profile.vue          ← NEW (Complete profile)
+│       │   │       └── Pending.vue               ← NEW (Waiting approval)
+│       │   │
+│       │   └── Admin/
+│       │       └── Vendors/
+│       │           ├── Index.vue                 ← NEW (Applications list)
+│       │           └── Show.vue                  ← NEW (Review application)
+│       │
+│       └── Components/
+│           ├── FileUploader.vue                  ← NEW (Reusable uploader)
+│           ├── OtpInput.vue                      ← NEW (6-digit input)
+│           ├── ProgressStepper.vue               ← NEW (Multi-step progress)
+│           └── DocumentViewer.vue                ← NEW (PDF/Image viewer)
+│
+├── routes/
+│   └── web.php                                   ← MODIFY (Add new routes)
+│
+└── config/
+    ├── services.php                              ← MODIFY (SSL Wireless config)
+    └── vendora.php                               ✅ EXISTS (Already configured)
