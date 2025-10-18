@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // ============================================
 // PUBLIC ROUTES
 // ============================================
 
-// Home Route - Redirect based on auth status and role
+// Home Route - Show marketplace homepage or redirect based on auth status
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();
@@ -23,9 +24,12 @@ Route::get('/', function () {
         }
     }
     
-    // Guest users see welcome page
-    return view('welcome');
+    // Guest users see marketplace homepage
+    return app(HomeController::class)->index();
 })->name('home');
+
+// Search Products
+Route::get('/products', [HomeController::class, 'search'])->name('products.search');
 
 // ============================================
 // AUTHENTICATION ROUTES
