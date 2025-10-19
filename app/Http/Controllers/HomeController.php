@@ -13,28 +13,48 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Get featured products
-        $featuredProducts = Product::where('status', 'active')
-            ->where('is_featured', true)
-            ->with('vendor')
-            ->limit(8)
-            ->get();
-
-        // Get hot/trending products (most viewed or best selling)
-        $hotProducts = Product::where('status', 'active')
-            ->orderBy('views_count', 'desc')
-            ->with('vendor')
-            ->limit(8)
-            ->get();
-
-        // Get new arrivals
-        $newArrivals = Product::where('status', 'active')
+        // SELLER DISPLAYS
+        // Featured Sellers (using latest vendors for now)
+        $featuredSellers = Vendor::where('status', 'active')
+            ->withCount('products')
             ->latest()
-            ->with('vendor')
-            ->limit(8)
+            ->limit(10)
             ->get();
 
-        // Get product categories (you can customize this based on your categories table)
+        // Top Sellers (using latest vendors for now, can add sales tracking later)
+        $topSellers = Vendor::where('status', 'active')
+            ->withCount('products')
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        // PRODUCT DISPLAYS (2 rows x 5 cols = 10 products visible, more scroll)
+        
+        // Product Display 1: Featured Products (using latest for now)
+        $featuredProducts = Product::where('status', 'active')
+            ->with('vendor')
+            ->latest()
+            ->limit(20)
+            ->get();
+
+        // Product Display 2: On Sale (empty for now, will work when price fields added)
+        $onSaleProducts = collect([]); // Empty collection for now
+
+        // Product Display 3: Hot Products (using latest)
+        $hotProducts = Product::where('status', 'active')
+            ->with('vendor')
+            ->latest()
+            ->limit(20)
+            ->get();
+
+        // Product Display 4: Deal of the Day (using random for now)
+        $dealOfTheDay = Product::where('status', 'active')
+            ->with('vendor')
+            ->inRandomOrder()
+            ->limit(20)
+            ->get();
+
+        // Categories for browse menu
         $categories = [
             ['name' => 'Electronics', 'icon' => '📱', 'slug' => 'electronics'],
             ['name' => 'Clothing', 'icon' => '👕', 'slug' => 'clothing'],
@@ -46,19 +66,14 @@ class HomeController extends Controller
             ['name' => 'Automotive', 'icon' => '🚗', 'slug' => 'automotive'],
         ];
 
-        // Get marketplace stats
-        $stats = [
-            'total_products' => Product::where('status', 'active')->count(),
-            'total_vendors' => Vendor::where('status', 'active')->count(),
-            'total_categories' => 50, // Update based on your actual categories
-        ];
-
         return inertia('Home', [
+            'featuredSellers' => $featuredSellers,
+            'topSellers' => $topSellers,
             'featuredProducts' => $featuredProducts,
+            'onSaleProducts' => $onSaleProducts,
             'hotProducts' => $hotProducts,
-            'newArrivals' => $newArrivals,
+            'dealOfTheDay' => $dealOfTheDay,
             'categories' => $categories,
-            'stats' => $stats,
         ]);
     }
 
