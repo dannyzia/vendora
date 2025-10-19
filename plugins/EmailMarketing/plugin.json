@@ -1,0 +1,11 @@
+{
+    "name": "email-marketing",
+    "version": "1.0.0",
+    "displayName": "Email Marketing",
+    "description": "Provides email marketing tools for vendors",
+    "author": "Vendora Team",
+    "requires": {
+        "core": ">=1.0.0",
+        "php": ">=8.1"
+    }
+}

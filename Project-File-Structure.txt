@@ -1,0 +1,139 @@
+vendora-marketplace/
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/
+│   │   │   │   └── VendorApplicationController.php      ✅ EXISTS (4,785 bytes)
+│   │   │   ├── AuthController.php                     ✅ EXISTS (3,174 bytes)
+│   │   │   ├── CartController.php                     ✅ EXISTS (1,945 bytes)
+│   │   │   ├── CheckoutController.php                 ✅ EXISTS (2,166 bytes)
+│   │   │   ├── CustomerController.php                 ✅ EXISTS (2,329 bytes)
+│   │   │   ├── HomeController.php                     ✅ EXISTS (679 bytes)
+│   │   │   ├── OrderController.php                    ✅ EXISTS (341 bytes)
+│   │   │   ├── PaymentController.php                  ✅ EXISTS (2,351 bytes)
+│   │   │   ├── ProductController.php                  ✅ EXISTS (2,930 bytes)
+│   │   │   └── Vendor/
+│   │   │       ├── DashboardController.php         ✅ EXISTS (2,570 bytes)
+│   │   │       ├── OnboardingController.php      ✅ EXISTS (10,510 bytes)
+│   │   │       ├── OrderController.php             ✅ EXISTS (400 bytes)
+│   │   │       ├── ProductController.php         ✅ EXISTS (2,283 bytes)
+│   │   │       └── ProfileController.php         ✅ EXISTS (1,979 bytes)
+│   │   │
+│   │   ├── Requests/
+│   │   │   ├── VendorApplicationRequest.php      ✅ EXISTS (1,411 bytes)
+│   │   │   ├── VendorDocumentRequest.php         ✅ EXISTS (1,278 bytes)
+│   │   │   └── VendorProfileRequest.php          ✅ EXISTS (739 bytes)
+│   │   │
+│   │   └── Middleware/
+│   │       ├── EnsureAdminRole.php               ✅ EXISTS (821 bytes)
+│   │       ├── EnsureVendorRole.php              ✅ EXISTS (877 bytes)
+│   │       └── RoleMiddleware.php                ✅ EXISTS (906 bytes)
+│   │
+│   ├── Services/
+│   │   ├── FileUploadService.php                 ✅ EXISTS (775 bytes)
+│   │   ├── OtpService.php                        ✅ EXISTS (9,029 bytes)
+│   │   └── VendorService.php                     ✅ EXISTS (459 bytes)
+│   │
+│   ├── Notifications/
+│   │   ├── NewOrderNotification.php              ✅ EXISTS (1,593 bytes)
+│   │   ├── NewVendorApplication.php              ✅ EXISTS (2,068 bytes)
+│   │   ├── VendorApplicationSubmitted.php        ✅ EXISTS (2,167 bytes)
+│   │   ├── VendorApprovedNotification.php        ✅ EXISTS (2,176 bytes)
+│   │   ├── VendorOtpNotification.php             ✅ EXISTS (1,591 bytes)
+│   │   └── VendorRejectedNotification.php        ✅ EXISTS (2,480 bytes)
+│   │
+│   └── Models/
+│       ├── Address.php                           ✅ EXISTS (1,502 bytes)
+│       ├── Booking.php                           ✅ EXISTS (2,670 bytes)
+│       ├── Cart.php                              ✅ EXISTS (1,388 bytes)
+│       ├── Category.php                          ✅ EXISTS (2,181 bytes)
+│       ├── CommissionLedger.php                  ✅ EXISTS (4,180 bytes)
+│       ├── Coupon.php                            ✅ EXISTS (3,163 bytes)
+│       ├── CouponUsage.php                       ✅ EXISTS (644 bytes)
+│       ├── DigitalProduct.php                    ✅ EXISTS (4,034 bytes)
+│       ├── Dispute.php                           ✅ EXISTS (4,558 bytes)
+│       ├── Download.php                          ✅ EXISTS (1,121 bytes)
+│       ├── Order.php                             ✅ EXISTS (5,996 bytes)
+│       ├── OrderItem.php                         ✅ EXISTS (4,270 bytes)
+│       ├── Page.php                              ✅ EXISTS (919 bytes)
+│       ├── Payment.php                           ✅ EXISTS (342 bytes)
+│       ├── Payout.php                            ✅ EXISTS (3,620 bytes)
+│       ├── PhysicalProduct.php                   ✅ EXISTS (2,678 bytes)
+│       ├── Product.php                           ✅ EXISTS (5,816 bytes)
+│       ├── ProductImage.php                      ✅ EXISTS (1,176 bytes)
+│       ├── ProductVariant.php                    ✅ EXISTS (1,431 bytes)
+│       ├── Review.php                            ✅ EXISTS (4,130 bytes)
+│       ├── ServiceProduct.php                    ✅ EXISTS (4,801 bytes)
+│       ├── Setting.php                           ✅ EXISTS (1,776 bytes)
+│       ├── TrustScoreLog.php                     ✅ EXISTS (1,123 bytes)
+│       ├── User.php                              ✅ EXISTS (2,469 bytes)
+│       ├── Vendor.php                            ✅ EXISTS (5,234 bytes)
+│       └── Wishlist.php                          ✅ EXISTS (1,034 bytes)
+│
+├── database/
+│   ├── migrations/
+│   │   ├── 2025_01_01_000001_create_users_table.php        ✅ EXISTS (1,478 bytes)
+│   │   ├── 2025_01_01_000002_create_vendors_table.php      ✅ EXISTS (3,469 bytes)
+│   │   ├── 2025_01_15_create_otp_verifications_table.php   ✅ EXISTS (1,516 bytes)
+│   │   ├── 2025_01_15_create_subscription_plans_table.php  ✅ EXISTS (2,326 bytes)
+│   │   └── add_vendor_onboarding_fields.php        ✅ EXISTS (3,613 bytes)
+│   │
+│   └── seeders/
+│       ├── AdminSeeder.php                       ✅ EXISTS (1,375 bytes)
+│       ├── CategorySeeder.php                    ✅ EXISTS (5,866 bytes)
+│       └── SubscriptionPlanSeeder.php            ✅ EXISTS (9,573 bytes)
+│
+├── resources/
+│   └── js/
+│       ├── Pages/
+│       │   ├── Admin/
+│       │   │   └── Vendors/
+│       │   │       ├── Index.vue                 ✅ EXISTS (10,580 bytes)
+│       │   │       └── Show.vue                  ✅ EXISTS (12,838 bytes)
+│       │   ├── Auth/
+│       │   │   ├── Login.vue                     ✅ EXISTS (5,574 bytes)
+│       │   │   └── Register.vue                  ✅ EXISTS (11,127 bytes)
+│       │   ├── Cart/
+│       │   │   └── Index.vue                     ✅ EXISTS (2,925 bytes)
+│       │   ├── Checkout/
+│       │   │   ├── Index.vue                     ✅ EXISTS (5,088 bytes)
+│       │   │   └── Success.vue                   ✅ EXISTS (980 bytes)
+│       │   ├── Customer/
+│       │   │   ├── Dashboard.vue                 ✅ EXISTS (14,895 bytes)
+│       │   │   └── Orders/
+│       │   │       └── Index.vue                 ✅ EXISTS (1,458 bytes)
+│       │   ├── Home.vue                            ✅ EXISTS (1,152 bytes)
+│       │   ├── Products/
+│       │   │   └── Index.vue                     ✅ EXISTS (1,268 bytes)
+│       │   └── Vendor/
+│       │       ├── Onboarding/
+│       │       │   ├── Step1Application.vue      ✅ EXISTS (15,234 bytes)
+│       │       │   ├── Step2Documents.vue        ✅ EXISTS (14,335 bytes)
+│       │       │   ├── Step3Verification.vue     ✅ EXISTS (7,081 bytes)
+│       │       │   ├── Step4Profile.vue          ✅ EXISTS (5,897 bytes)
+│       │       │   └── Pending.vue               ✅ EXISTS (6,796 bytes)
+│       │       ├── Orders/
+│       │       │   └── Index.vue                 ✅ EXISTS (3,257 bytes)
+│       │       └── Products/
+│       │           ├── Index.vue                 ← NEW (List products)
+│       │           ├── Create.vue                ← NEW (Create product form)
+│       │           └── Edit.vue                  ← NEW (Edit product form)
+│       │
+│       ├── Components/
+│       │   ├── AddToCart.vue                       ✅ EXISTS (762 bytes)
+│       │   ├── DocumentViewer.vue                ✅ EXISTS (829 bytes)
+│       │   ├── FileUploader.vue                  ✅ EXISTS (1,381 bytes)
+│       │   ├── OtpInput.vue                      ✅ EXISTS (1,159 bytes)
+│       │   └── ProgressStepper.vue               ✅ EXISTS (1,625 bytes)
+│       │
+│       └── Layouts/
+│           └── MainLayout.vue                    ✅ EXISTS (3,476 bytes)
+│
+├── routes/
+│   └── web.php                                   ✅ EXISTS (8,226 bytes)
+│
+└── config/
+    ├── services.php                              ✅ EXISTS (1,035 bytes)
+    ├── sslcommerz.php                            ✅ EXISTS (1,054 bytes)
+    └── vendora.php                               ✅ EXISTS (27,370 bytes)

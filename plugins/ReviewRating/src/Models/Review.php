@@ -1,7 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace Plugins\ReviewRating\Models;
 
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

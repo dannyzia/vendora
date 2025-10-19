@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Vendor\OnboardingController;
+use App\Http\Controllers\Vendor\ProductController;
 use App\Http\Controllers\Admin\VendorApplicationController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +44,31 @@ Route::get('/', function () {
 Route::get('/products', [HomeController::class, 'search'])->name('products.search');
 
 // ============================================
+// CART ROUTES
+// ============================================
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::put('/cart/{product}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+// ============================================
+// CHECKOUT ROUTES
+// ============================================
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/order/{order}/success', function (App\Models\Order $order) {
+    return inertia('Checkout/Success', ['order' => $order]);
+})->name('order.success');
+
+// ============================================
+// PAYMENT ROUTES
+// ============================================
+Route::post('/pay', [PaymentController::class, 'pay'])->name('payment.pay');
+Route::post('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::post('/payment/failure', [PaymentController::class, 'failure'])->name('payment.failure');
+Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+
+// ============================================
 // AUTHENTICATION ROUTES
 // ============================================
 Route::middleware('guest')->group(function () {
@@ -62,7 +92,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
-    Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::get('/wishlist', [CustomerController::class, 'wishlist'])->name('wishlist');
 });
 
@@ -89,7 +119,17 @@ Route::middleware(['auth', 'role:vendor'])->prefix('vendor')->name('vendor.')->g
         }
         return inertia('Vendor/Dashboard', ['vendor' => $vendor]);
     })->name('dashboard');
+
+    // Vendor Profile
+    Route::get('/profile', [\App\Http\Controllers\Vendor\ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [\App\Http\Controllers\Vendor\ProfileController::class, 'update'])->name('profile.update');
     
+    // Product Management
+    Route::resource('products', ProductController::class);
+
+    // Order Management
+    Route::get('/orders', [\App\Http\Controllers\Vendor\OrderController::class, 'index'])->name('orders.index');
+
     // Onboarding Routes
     Route::prefix('onboarding')->name('onboarding.')->group(function () {
         // Main onboarding router

@@ -1,0 +1,16 @@
+{
+    "name": "pathao-shipping",
+    "version": "1.0.0",
+    "displayName": "Pathao Shipping",
+    "description": "Provides shipping services through Pathao",
+    "author": "Vendora Team",
+    "requires": {
+        "core": ">=1.0.0",
+        "php": ">=8.1"
+    },
+    "provides": ["shipping-method"],
+    "hooks": [
+        "checkout.shipping_methods"
+    ],
+    "settings": true
+}

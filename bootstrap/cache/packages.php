@@ -80,6 +80,17 @@
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
     ),
   ),
+  'raziul/sslcommerz-laravel' => 
+  array (
+    'aliases' => 
+    array (
+      'Sslcommerz' => 'Raziul\\Sslcommerz\\Facades\\Sslcommerz',
+    ),
+    'providers' => 
+    array (
+      0 => 'Raziul\\Sslcommerz\\SslcommerzServiceProvider',
+    ),
+  ),
   'spatie/laravel-medialibrary' => 
   array (
     'providers' => 

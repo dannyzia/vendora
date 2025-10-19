@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
-            $table->timestamps();
             
             // Commission override for category
             $table->decimal('commission_rate', 5, 2)->nullable();
@@ -30,8 +29,6 @@ return new class extends Migration
             $table->text('meta_description')->nullable();
             
             // Display settings
-            $table->integer('sort_order')->default(0);
-            $table->boolean('is_active')->default(true);
             $table->boolean('show_on_homepage')->default(false);
             
             // Statistics

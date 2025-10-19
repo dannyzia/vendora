@@ -35,11 +35,12 @@
     31 => 'Carbon\\Laravel\\ServiceProvider',
     32 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     33 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    34 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
-    35 => 'Spatie\\Permission\\PermissionServiceProvider',
-    36 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
-    37 => 'App\\Providers\\AppServiceProvider',
+    34 => 'Raziul\\Sslcommerz\\SslcommerzServiceProvider',
+    35 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
+    36 => 'Spatie\\Permission\\PermissionServiceProvider',
+    37 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
     38 => 'App\\Providers\\AppServiceProvider',
+    39 => 'App\\Providers\\AppServiceProvider',
   ),
   'eager' => 
   array (
@@ -62,11 +63,12 @@
     16 => 'Carbon\\Laravel\\ServiceProvider',
     17 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     18 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    19 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
-    20 => 'Spatie\\Permission\\PermissionServiceProvider',
-    21 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
-    22 => 'App\\Providers\\AppServiceProvider',
+    19 => 'Raziul\\Sslcommerz\\SslcommerzServiceProvider',
+    20 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
+    21 => 'Spatie\\Permission\\PermissionServiceProvider',
+    22 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
     23 => 'App\\Providers\\AppServiceProvider',
+    24 => 'App\\Providers\\AppServiceProvider',
   ),
   'deferred' => 
   array (

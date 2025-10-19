@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -31,6 +32,11 @@ class AuthController extends Controller
             if ($user->isAdmin()) {
                 return redirect()->intended('/admin/dashboard');
             } elseif ($user->isVendor()) {
+                // Check vendor onboarding status
+                $vendor = $user->vendor;
+                if (!$vendor || $vendor->onboarding_status !== 'complete') {
+                    return redirect()->intended('/vendor/onboarding');
+                }
                 return redirect()->intended('/vendor/dashboard');
             } else {
                 // Customer
@@ -70,11 +76,20 @@ class AuthController extends Controller
 
         // Role-based redirect after registration
         if ($user->isVendor()) {
-            return redirect()->route('vendor.onboarding.index')->with('success', 'Welcome! Please complete your vendor onboarding.');
+            // Create vendor record
+            Vendor::create([
+                'user_id' => $user->id,
+                'status' => 'pending',
+                'onboarding_status' => 'incomplete',
+            ]);
+            
+            return redirect()->route('vendor.onboarding.index')
+                ->with('success', 'Welcome! Please complete your vendor onboarding to start selling.');
         }
 
         // Customer
-        return redirect()->route('customer.dashboard')->with('success', 'Welcome to Vendora! Start shopping now.');
+        return redirect()->route('customer.dashboard')
+            ->with('success', 'Welcome to Vendora! Start shopping now.');
     }
 
     public function logout(Request $request)

@@ -1,0 +1,10 @@
+{
+  "name": "discount-coupon",
+  "version": "1.0.0",
+  "displayName": "Discount Coupons",
+  "description": "Adds coupon and discount functionality to the marketplace.",
+  "author": "Vendora Team",
+  "requires": {
+    "core": ">=1.0.0"
+  }
+}

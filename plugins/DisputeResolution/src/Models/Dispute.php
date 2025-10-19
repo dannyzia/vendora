@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace Plugins\DisputeResolution\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Order;
+use App\Models\User;
+use App\Models\Vendor;
 
 class Dispute extends Model
 {

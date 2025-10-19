@@ -14,9 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // ← ADD THIS BLOCK
         $middleware->alias([
             'role' => RoleMiddleware::class,
+            'vendor' => EnsureVendorRole::class,
+            'admin' => EnsureAdminRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

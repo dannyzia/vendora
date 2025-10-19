@@ -1,0 +1,14 @@
+{
+  "name": "dispute-resolution",
+  "version": "1.0.0",
+  "displayName": "Dispute Resolution",
+  "description": "Adds a dispute resolution system for orders.",
+  "author": "Vendora Team",
+  "requires": {
+    "core": ">=1.0.0"
+  },
+  "hooks": [
+    "order.actions"
+  ],
+  "settings": true
+}

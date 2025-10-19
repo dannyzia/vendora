@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace Plugins\DiscountCoupon\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Plugins\DiscountCoupon\Models\CouponUsage;
 
 class Coupon extends Model
 {

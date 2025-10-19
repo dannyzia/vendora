@@ -1,0 +1,11 @@
+{
+    "name": "subscription-tiers",
+    "version": "1.0.0",
+    "displayName": "Subscription Tiers",
+    "description": "Manage vendor subscription tiers",
+    "author": "Vendora Team",
+    "requires": {
+        "core": ">=1.0.0",
+        "php": ">=8.1"
+    }
+}
