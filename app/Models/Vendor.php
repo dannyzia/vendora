@@ -40,11 +40,22 @@ class Vendor extends Model
         'subscription_expires_at',
         'commission_rate',
         'commission_type',
+
+        // International Address Structure
         'business_address',
-        'city',
-        'district',
-        'division',
+        'country',
+        'state_province_region',
+        'district_county',
+        'city_municipality',
+        'area_neighborhood',
         'postal_code',
+
+        // Legacy fields (kept for backward compatibility, but not recommended)
+        'city',           // Use city_municipality instead
+        'district',       // Use district_county instead
+        'division',       // Use state_province_region instead
+        'state',          // Use state_province_region instead
+
         'total_sales',
         'total_orders',
         'available_balance',
@@ -52,38 +63,46 @@ class Vendor extends Model
         'on_hold_balance',
         'approved_at',
         'last_active_at',
+
+        // Onboarding fields
         'onboarding_status',
         'shop_name',
         'shop_description',
         'business_registration_number',
-        'state',
         'contact_person',
         'contact_phone',
         'contact_email',
+
+        // KYC Document fields
         'nid_number',
         'nid_front_image',
         'nid_back_image',
         'trade_license_number',
         'trade_license_image',
         'trade_license_expiry',
+
+        // Bank/Payment fields
         'bank_account_number',
+
+        // Verification fields
         'phone_verified_at',
         'otp_code',
         'otp_expires_at',
+
+        // Admin approval fields
         'approved_by',
         'rejected_at',
         'rejected_by',
+
+        // Shop settings
         'shop_logo',
         'shop_banner',
         'business_hours',
         'is_featured',
-
     ];
 
     protected $casts = [
         'kyc_documents' => 'array',
-        'trust_score' => 'integer',
-        'commission_rate' => 'decimal:2',
         'total_sales' => 'decimal:2',
         'total_orders' => 'integer',
         'available_balance' => 'decimal:2',
@@ -91,17 +110,25 @@ class Vendor extends Model
         'on_hold_balance' => 'decimal:2',
         'subscription_started_at' => 'datetime',
         'subscription_expires_at' => 'datetime',
+        'commission_rate' => 'decimal:2',
         'approved_at' => 'datetime',
         'last_active_at' => 'datetime',
+        'trade_license_expiry' => 'date',
+        'phone_verified_at' => 'datetime',
+        'otp_expires_at' => 'datetime',
+        'rejected_at' => 'datetime',
+        'business_hours' => 'array',
+        'is_featured' => 'boolean',
+        'trust_score' => 'integer',
     ];
 
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($vendor) {
             if (empty($vendor->slug)) {
-                $vendor->slug = Str::slug($vendor->business_name);
+                $vendor->slug = Str::slug($vendor->business_name ?? $vendor->shop_name ?? 'vendor-' . Str::random(6));
             }
         });
     }
@@ -122,14 +149,9 @@ class Vendor extends Model
         return $this->hasMany(Order::class);
     }
 
-    public function commissionLedgers()
+    public function reviews()
     {
-        return $this->hasMany(CommissionLedger::class);
-    }
-
-    public function payouts()
-    {
-        return $this->hasMany(Payout::class);
+        return $this->hasMany(Review::class);
     }
 
     public function disputes()
@@ -137,9 +159,14 @@ class Vendor extends Model
         return $this->hasMany(Dispute::class);
     }
 
-    public function reviews()
+    public function payouts()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Payout::class);
+    }
+
+    public function commissionLedgers()
+    {
+        return $this->hasMany(CommissionLedger::class);
     }
 
     public function trustScoreLogs()
@@ -147,20 +174,46 @@ class Vendor extends Model
         return $this->hasMany(TrustScoreLog::class);
     }
 
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function rejectedBy()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
+    public function scopeOnboarding($query, $status)
+    {
+        return $query->where('onboarding_status', $status);
+    }
+
     // Status checks
+    public function isActive()
+    {
+        return $this->status === 'approved' && $this->onboarding_status === 'complete';
+    }
+
     public function isPending()
     {
         return $this->status === 'pending';
-    }
-
-    public function isUnderReview()
-    {
-        return $this->status === 'under_review';
-    }
-
-    public function isApproved()
-    {
-        return $this->status === 'approved';
     }
 
     public function isSuspended()
@@ -173,54 +226,78 @@ class Vendor extends Model
         return $this->status === 'rejected';
     }
 
-    // Subscription checks
-    public function hasActiveSubscription()
+    // Onboarding status checks
+    public function isOnboardingComplete()
     {
-        return $this->subscription_expires_at && $this->subscription_expires_at->isFuture();
+        return $this->onboarding_status === 'complete';
     }
 
-    public function isFreePlan()
+    public function isOnboardingIncomplete()
     {
-        return $this->subscription_plan === 'free';
+        return $this->onboarding_status === 'incomplete';
     }
 
-    public function isBasicPlan()
+    public function isAwaitingApproval()
     {
-        return $this->subscription_plan === 'basic';
+        return $this->onboarding_status === 'pending';
     }
 
-    public function isProPlan()
+    // Helper methods
+    public function getFullAddress()
     {
-        return $this->subscription_plan === 'pro';
+        $parts = array_filter([
+            $this->business_address,
+            $this->area_neighborhood,
+            $this->city_municipality,
+            $this->district_county,
+            $this->state_province_region,
+            $this->postal_code,
+            $this->country,
+        ]);
+
+        return implode(', ', $parts);
     }
 
-    // Trust score
-    public function getTrustBadgeAttribute()
+    public function getAverageRating()
     {
-        if ($this->trust_score >= 80) {
-            return 'verified_seller';
-        } elseif ($this->trust_score >= 60) {
-            return 'trusted_seller';
-        } elseif ($this->trust_score >= 40) {
-            return 'standard_seller';
-        }
-        return 'new_seller';
+        return $this->reviews()->approved()->avg('rating') ?? 0;
     }
 
-    // Balance calculations
-    public function getTotalBalanceAttribute()
+    public function getTotalReviews()
     {
-        return $this->available_balance + $this->pending_balance + $this->on_hold_balance;
+        return $this->reviews()->approved()->count();
     }
 
-    // Commission
+    public function canSell()
+    {
+        return $this->isActive() && $this->isOnboardingComplete();
+    }
+
+    public function updateTrustScore($change, $reason, $related = null)
+    {
+        $oldScore = $this->trust_score;
+        $newScore = max(0, min(100, $oldScore + $change));
+
+        $this->update(['trust_score' => $newScore]);
+
+        TrustScoreLog::recordChange($this->id, $oldScore, $newScore, $reason, $related);
+
+        return $newScore;
+    }
+
+    // Commission calculation
     public function getCommissionRate()
     {
-        // Priority: vendor-specific > subscription plan > default
-        if ($this->commission_rate) {
+        if ($this->commission_rate !== null) {
             return $this->commission_rate;
         }
 
-        return config("vendora.subscription_plans.{$this->subscription_plan}.features.commission_rate", 15);
+        return config('vendora.commissions.default_rate', 10);
+    }
+
+    public function calculateCommission($amount)
+    {
+        $rate = $this->getCommissionRate();
+        return ($amount * $rate) / 100;
     }
 }

@@ -1,7 +1,6 @@
 <template>
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12">
         <div class="max-w-4xl mx-auto px-4">
-            <!-- Progress Steps -->
             <div class="mb-8">
                 <div class="flex items-center justify-between">
                     <div class="flex-1">
@@ -32,7 +31,6 @@
                 </div>
             </div>
 
-            <!-- Main Form Card -->
             <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/40 p-8">
                 <div class="mb-6">
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Vendor Application</h1>
@@ -40,10 +38,9 @@
                 </div>
 
                 <form @submit.prevent="submit">
-                    <!-- Shop Information -->
                     <div class="space-y-6 mb-8">
                         <h2 class="text-xl font-bold text-gray-900 border-b pb-2">Shop Information</h2>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Shop Name *</label>
                             <input
@@ -70,10 +67,9 @@
                         </div>
                     </div>
 
-                    <!-- Business Information -->
                     <div class="space-y-6 mb-8">
                         <h2 class="text-xl font-bold text-gray-900 border-b pb-2">Business Information</h2>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Business Type *</label>
                             <select
@@ -116,10 +112,29 @@
                         </div>
                     </div>
 
-                    <!-- Business Address -->
                     <div class="space-y-6 mb-8">
                         <h2 class="text-xl font-bold text-gray-900 border-b pb-2">Business Address</h2>
-                        
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                            <select
+                                v-model="form.country"
+                                required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            >
+                                <option value="Bangladesh">Bangladesh</option>
+                                <option value="India">India</option>
+                                <option value="Pakistan">Pakistan</option>
+                                <option value="Sri Lanka">Sri Lanka</option>
+                                <option value="Nepal">Nepal</option>
+                                <option value="United States">United States</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                                </select>
+                            <span v-if="errors.country" class="text-red-500 text-sm">{{ errors.country }}</span>
+                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Street Address *</label>
                             <input
@@ -127,54 +142,94 @@
                                 type="text"
                                 required
                                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                placeholder="House/Building, Road, Area"
+                                placeholder="House/Building number, Street, Road"
                             />
+                            <p class="text-sm text-gray-500 mt-1">Enter your complete street address</p>
                             <span v-if="errors.business_address" class="text-red-500 text-sm">{{ errors.business_address }}</span>
                         </div>
 
-                        <div class="grid md:grid-cols-3 gap-6">
+                        <div class="grid md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    State/Province/Region *
+                                </label>
                                 <input
-                                    v-model="form.city"
+                                    v-model="form.state_province_region"
                                     type="text"
                                     required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    placeholder="e.g., Dhaka"
+                                    placeholder="e.g., Dhaka Division, California"
                                 />
-                                <span v-if="errors.city" class="text-red-500 text-sm">{{ errors.city }}</span>
+                                <p class="text-sm text-gray-500 mt-1">Division for Bangladesh, State for others</p>
+                                <span v-if="errors.state_province_region" class="text-red-500 text-sm">{{ errors.state_province_region }}</span>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">State/Division *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    District/County
+                                    <span class="text-gray-400 text-xs ml-1">(Optional)</span>
+                                </label>
                                 <input
-                                    v-model="form.state"
+                                    v-model="form.district_county"
+                                    type="text"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="e.g., Dhaka District"
+                                />
+                                <p class="text-sm text-gray-500 mt-1">Leave blank if not applicable</p>
+                                <span v-if="errors.district_county" class="text-red-500 text-sm">{{ errors.district_county }}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    City/Municipality *
+                                </label>
+                                <input
+                                    v-model="form.city_municipality"
                                     type="text"
                                     required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    placeholder="e.g., Dhaka Division"
+                                    placeholder="e.g., Dhaka, Los Angeles"
                                 />
-                                <span v-if="errors.state" class="text-red-500 text-sm">{{ errors.state }}</span>
+                                <p class="text-sm text-gray-500 mt-1">City, town, or municipality name</p>
+                                <span v-if="errors.city_municipality" class="text-red-500 text-sm">{{ errors.city_municipality }}</span>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Postal Code *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Area/Neighborhood
+                                    <span class="text-gray-400 text-xs ml-1">(Optional)</span>
+                                </label>
+                                <input
+                                    v-model="form.area_neighborhood"
+                                    type="text"
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="e.g., Dhanmondi, Gulshan"
+                                />
+                                <p class="text-sm text-gray-500 mt-1">Specific area or neighborhood</p>
+                                <span v-if="errors.area_neighborhood" class="text-red-500 text-sm">{{ errors.area_neighborhood }}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Postal/ZIP Code *</label>
                                 <input
                                     v-model="form.postal_code"
                                     type="text"
                                     required
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    placeholder="e.g., 1200"
+                                    placeholder="e.g., 1200, 90028"
                                 />
                                 <span v-if="errors.postal_code" class="text-red-500 text-sm">{{ errors.postal_code }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Contact Information -->
                     <div class="space-y-6 mb-8">
                         <h2 class="text-xl font-bold text-gray-900 border-b pb-2">Contact Information</h2>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Contact Person Name *</label>
                             <input
@@ -214,7 +269,6 @@
                         </div>
                     </div>
 
-                    <!-- Actions -->
                     <div class="flex items-center justify-between pt-6 border-t">
                         <Link href="/" class="text-gray-600 hover:text-gray-900">Cancel</Link>
                         <button
@@ -244,19 +298,29 @@ const props = defineProps({
 })
 
 const form = useForm({
-    shop_name: '',
-    shop_description: '',
-    business_type: '',
-    business_name: '',
-    business_registration_number: '',
-    business_address: '',
-    city: '',
-    state: '',
-    postal_code: '',
-    contact_person: '',
-    contact_phone: '',
-    contact_email: '',
-})
+    // Shop Information
+    shop_name: props.vendor?.shop_name || '',
+    shop_description: props.vendor?.shop_description || '',
+
+    // Business Information
+    business_type: props.vendor?.business_type || 'individual',
+    business_name: props.vendor?.business_name || '',
+    business_registration_number: props.vendor?.business_registration_number || '',
+
+    // International Address Structure (NEW!)
+    country: props.vendor?.country || 'Bangladesh',
+    business_address: props.vendor?.business_address || '',
+    state_province_region: props.vendor?.state_province_region || '',
+    district_county: props.vendor?.district_county || '',
+    city_municipality: props.vendor?.city_municipality || '',
+    area_neighborhood: props.vendor?.area_neighborhood || '',
+    postal_code: props.vendor?.postal_code || '',
+
+    // Contact Information
+    contact_person: props.vendor?.contact_person || '',
+    contact_phone: props.vendor?.contact_phone || '',
+    contact_email: props.vendor?.contact_email || '',
+});
 
 const errors = computed(() => form.errors)
 const processing = computed(() => form.processing)

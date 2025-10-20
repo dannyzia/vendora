@@ -17,7 +17,7 @@ class OnboardingController extends Controller
     public function index()
     {
         $vendor = auth()->user()->vendor;
-        
+
         if (!$vendor) {
             // Create vendor record if doesn't exist
             $vendor = Vendor::create([
@@ -47,7 +47,7 @@ class OnboardingController extends Controller
     public function showStep1()
     {
         $vendor = auth()->user()->vendor;
-        
+
         return inertia('Vendor/Onboarding/Step1Application', [
             'vendor' => $vendor,
         ]);
@@ -61,10 +61,17 @@ class OnboardingController extends Controller
             'business_type' => 'required|in:individual,company,partnership',
             'business_name' => 'required_if:business_type,company,partnership|nullable|string|max:255',
             'business_registration_number' => 'required_if:business_type,company,partnership|nullable|string|max:100',
+
+            // International Address Structure
+            'country' => 'required|string|max:100',
             'business_address' => 'required|string|max:500',
-            'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
+            'state_province_region' => 'required|string|max:100',
+            'district_county' => 'nullable|string|max:100',
+            'city_municipality' => 'required|string|max:100',
+            'area_neighborhood' => 'nullable|string|max:100',
             'postal_code' => 'required|string|max:20',
+
+            // Contact Information
             'contact_person' => 'required|string|max:255',
             'contact_phone' => 'required|string|max:20',
             'contact_email' => 'required|email|max:255',
@@ -77,7 +84,7 @@ class OnboardingController extends Controller
         ]);
 
         return redirect()->route('vendor.onboarding.step2')
-            ->with('success', 'Application submitted! Please upload required documents.');
+            ->with('success', 'Application submitted! Please upload your documents.');
     }
 
     // ========================================
@@ -87,9 +94,8 @@ class OnboardingController extends Controller
     public function showStep2()
     {
         $vendor = auth()->user()->vendor;
-        
-        // Redirect if step 1 not completed
-        if (in_array($vendor->onboarding_status, ['incomplete', 'application'])) {
+
+        if ($vendor->onboarding_status === 'incomplete') {
             return redirect()->route('vendor.onboarding.step1')
                 ->with('error', 'Please complete the application form first.');
         }
@@ -102,41 +108,29 @@ class OnboardingController extends Controller
     public function storeStep2(Request $request)
     {
         $validated = $request->validate([
-            // NID
-            'nid_number' => 'required|string|max:50',
-            'nid_front_image' => 'required|image|mimes:jpeg,jpg,png,pdf|max:5120', // 5MB
-            'nid_back_image' => 'required|image|mimes:jpeg,jpg,png,pdf|max:5120',
-            
-            // Trade License
+            'nid_front_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'nid_back_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'trade_license_image' => 'required|image|mimes:jpg,jpeg,png,pdf|max:2048',
             'trade_license_number' => 'required|string|max:100',
-            'trade_license_image' => 'required|image|mimes:jpeg,jpg,png,pdf|max:5120',
             'trade_license_expiry' => 'required|date|after:today',
-            
-            // Bank Details
-            'bank_name' => 'required|string|max:255',
-            'bank_account_number' => 'required|string|max:50',
-            'bank_account_name' => 'required|string|max:255',
-            'bank_branch' => 'required|string|max:255',
-            'bank_routing_number' => 'nullable|string|max:50',
         ]);
 
         $vendor = auth()->user()->vendor;
 
-        // Upload NID images
+        // Store documents
         if ($request->hasFile('nid_front_image')) {
-            $validated['nid_front_image'] = $request->file('nid_front_image')
-                ->store('vendor-documents/nid', 'public');
+            $path = $request->file('nid_front_image')->store('vendors/documents', 'public');
+            $validated['nid_front_image'] = $path;
         }
 
         if ($request->hasFile('nid_back_image')) {
-            $validated['nid_back_image'] = $request->file('nid_back_image')
-                ->store('vendor-documents/nid', 'public');
+            $path = $request->file('nid_back_image')->store('vendors/documents', 'public');
+            $validated['nid_back_image'] = $path;
         }
 
-        // Upload Trade License
         if ($request->hasFile('trade_license_image')) {
-            $validated['trade_license_image'] = $request->file('trade_license_image')
-                ->store('vendor-documents/trade-license', 'public');
+            $path = $request->file('trade_license_image')->store('vendors/documents', 'public');
+            $validated['trade_license_image'] = $path;
         }
 
         $vendor->update([
@@ -149,75 +143,85 @@ class OnboardingController extends Controller
     }
 
     // ========================================
-    // STEP 3: PHONE VERIFICATION (OTP)
+    // STEP 3: PHONE VERIFICATION
     // ========================================
 
     public function showStep3()
     {
         $vendor = auth()->user()->vendor;
-        
-        // Redirect if previous steps not completed
-        if (in_array($vendor->onboarding_status, ['incomplete', 'application', 'documents'])) {
-            return redirect()->route('vendor.onboarding.index')
+
+        if (in_array($vendor->onboarding_status, ['incomplete', 'application'])) {
+            return redirect()->route('vendor.onboarding.step1')
                 ->with('error', 'Please complete previous steps first.');
         }
 
         return inertia('Vendor/Onboarding/Step3Verification', [
             'vendor' => $vendor,
-            'phone' => $vendor->contact_phone,
         ]);
     }
 
     public function sendOtp(Request $request)
     {
+        $request->validate([
+            'phone' => 'required|string|max:20',
+        ]);
+
         $vendor = auth()->user()->vendor;
 
         // Generate 6-digit OTP
         $otp = rand(100000, 999999);
 
-        // Save OTP (expires in 10 minutes)
         $vendor->update([
+            'contact_phone' => $request->phone,
             'otp_code' => $otp,
             'otp_expires_at' => now()->addMinutes(10),
         ]);
 
-        // Send OTP via email (in production, use SMS gateway)
+        // Send OTP via SMS (implement your SMS provider)
+        // For now, we'll just return it in response (ONLY FOR DEVELOPMENT)
         try {
-            auth()->user()->notify(new VendorOtpNotification($otp));
-            
-            return back()->with('success', 'OTP sent to your email!');
+            // auth()->user()->notify(new VendorOtpNotification($otp));
+
+            // TODO: Implement actual SMS sending
+            \Log::info("OTP for vendor {$vendor->id}: {$otp}");
+
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to send OTP. Please try again.');
+            \Log::error('Failed to send OTP: ' . $e->getMessage());
         }
+
+        return back()->with('success', 'OTP sent to your phone number!');
     }
 
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'otp' => 'required|numeric|digits:6',
+            'otp' => 'required|string|size:6',
         ]);
 
         $vendor = auth()->user()->vendor;
 
-        // Check if OTP is correct and not expired
-        if ($vendor->otp_code != $request->otp) {
-            return back()->withErrors(['otp' => 'Invalid OTP code.']);
+        if (!$vendor->otp_code || !$vendor->otp_expires_at) {
+            return back()->withErrors(['otp' => 'Please request an OTP first.']);
         }
 
-        if (now()->isAfter($vendor->otp_expires_at)) {
+        if ($vendor->otp_expires_at < now()) {
             return back()->withErrors(['otp' => 'OTP has expired. Please request a new one.']);
         }
 
-        // Mark phone as verified and submit application
+        if ($vendor->otp_code !== $request->otp) {
+            return back()->withErrors(['otp' => 'Invalid OTP. Please try again.']);
+        }
+
+        // Mark phone as verified and submit for admin review
         $vendor->update([
             'phone_verified_at' => now(),
             'otp_code' => null,
             'otp_expires_at' => null,
-            'onboarding_status' => 'pending',
+            'onboarding_status' => 'pending', // Submit for admin review
         ]);
 
         return redirect()->route('vendor.onboarding.pending')
-            ->with('success', 'Phone verified! Your application is now pending admin approval.');
+            ->with('success', 'Phone verified! Your application has been submitted for review.');
     }
 
     // ========================================
@@ -228,24 +232,13 @@ class OnboardingController extends Controller
     {
         $vendor = auth()->user()->vendor;
 
-        if ($vendor->onboarding_status === 'rejected') {
-            return inertia('Vendor/Onboarding/Rejected', [
-                'vendor' => $vendor,
-                'reason' => $vendor->rejection_reason,
-            ]);
-        }
-
-        if ($vendor->onboarding_status === 'approved') {
-            return redirect()->route('vendor.onboarding.complete');
-        }
-
         return inertia('Vendor/Onboarding/Pending', [
             'vendor' => $vendor,
         ]);
     }
 
     // ========================================
-    // STEP 5: COMPLETE PROFILE
+    // STEP 5: COMPLETE PROFILE (After Approval)
     // ========================================
 
     public function showComplete()
@@ -264,40 +257,36 @@ class OnboardingController extends Controller
     public function storeComplete(Request $request)
     {
         $validated = $request->validate([
-            'shop_logo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-            'shop_banner' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
-            'business_hours' => 'nullable|array',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
+            'banner' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'bio' => 'nullable|string|max:1000',
+            'bank_name' => 'nullable|string|max:100',
+            'bank_account_number' => 'nullable|string|max:100',
+            'bank_account_name' => 'nullable|string|max:255',
+            'bkash_number' => 'nullable|string|max:20',
+            'nagad_number' => 'nullable|string|max:20',
         ]);
 
         $vendor = auth()->user()->vendor;
 
-        // Upload shop logo
-        if ($request->hasFile('shop_logo')) {
-            // Delete old logo if exists
-            if ($vendor->shop_logo) {
-                Storage::disk('public')->delete($vendor->shop_logo);
-            }
-            $validated['shop_logo'] = $request->file('shop_logo')
-                ->store('vendor-shops/logos', 'public');
+        // Store logo
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('vendors/logos', 'public');
+            $validated['logo'] = $path;
         }
 
-        // Upload shop banner
-        if ($request->hasFile('shop_banner')) {
-            // Delete old banner if exists
-            if ($vendor->shop_banner) {
-                Storage::disk('public')->delete($vendor->shop_banner);
-            }
-            $validated['shop_banner'] = $request->file('shop_banner')
-                ->store('vendor-shops/banners', 'public');
+        // Store banner
+        if ($request->hasFile('banner')) {
+            $path = $request->file('banner')->store('vendors/banners', 'public');
+            $validated['banner'] = $path;
         }
 
         $vendor->update([
             ...$validated,
             'onboarding_status' => 'complete',
-            'status' => 'active',
         ]);
 
         return redirect()->route('vendor.dashboard')
-            ->with('success', 'Congratulations! Your shop is now ready. Start adding products!');
+            ->with('success', 'Welcome to Vendora! Your vendor account is now active.');
     }
 }

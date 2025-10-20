@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -25,10 +26,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            
+
             // Role-based redirect
             $user = Auth::user();
-            
+
             if ($user->isAdmin()) {
                 return redirect()->intended('/admin/dashboard');
             } elseif ($user->isVendor()) {
@@ -76,13 +77,25 @@ class AuthController extends Controller
 
         // Role-based redirect after registration
         if ($user->isVendor()) {
-            // Create vendor record
+            // Generate a unique temporary slug for the vendor
+            $baseSlug = Str::slug($user->name);
+            $slug = $baseSlug;
+            $counter = 1;
+
+            // Ensure slug uniqueness
+            while (Vendor::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+
+            // Create vendor record with temporary slug
             Vendor::create([
                 'user_id' => $user->id,
+                'slug' => $slug,
                 'status' => 'pending',
                 'onboarding_status' => 'incomplete',
             ]);
-            
+
             return redirect()->route('vendor.onboarding.index')
                 ->with('success', 'Welcome! Please complete your vendor onboarding to start selling.');
         }
