@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Plugins\DisputeResolution\Models\Dispute;
 use Plugins\ReviewRating\Models\Review;
+use Plugins\Wishlist\Models\Wishlist;
 
 class User extends Authenticatable
 {

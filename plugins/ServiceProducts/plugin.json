@@ -1,0 +1,10 @@
+{
+  "name": "service-products",
+  "version": "1.0.0",
+  "displayName": "Service Products",
+  "description": "Adds support for selling services and bookable products.",
+  "author": "Vendora Team",
+  "requires": {
+    "core": ">=1.0.0"
+  }
+}

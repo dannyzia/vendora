@@ -1,0 +1,10 @@
+{
+  "name": "wishlist",
+  "version": "1.0.0",
+  "displayName": "Product Wishlist",
+  "description": "Allows customers to save products to a wishlist.",
+  "author": "Vendora Team",
+  "requires": {
+    "core": ">=1.0.0"
+  }
+}

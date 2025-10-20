@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace Plugins\ServiceProducts\Models;
 
+use App\Models\Booking;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

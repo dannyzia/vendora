@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Plugins\ReviewRating\Models\Review;
+use Plugins\Wishlist\Models\Wishlist;
 
 class Product extends Model
 {

@@ -1,0 +1,10 @@
+{
+  "name": "digital-products",
+  "version": "1.0.0",
+  "displayName": "Digital Products",
+  "description": "Adds support for selling digital and downloadable products.",
+  "author": "Vendora Team",
+  "requires": {
+    "core": ">=1.0.0"
+  }
+}

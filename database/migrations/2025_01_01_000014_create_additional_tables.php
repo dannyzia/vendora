@@ -23,16 +23,6 @@ return new class extends Migration
             $table->index(['user_id', 'product_id']);
         });
 
-        // Wishlists
-        Schema::create('wishlists', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-
-            $table->unique(['user_id', 'product_id']);
-        });
-
         // Addresses
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
@@ -198,7 +188,6 @@ return new class extends Migration
         Schema::dropIfExists('product_images');
         Schema::dropIfExists('product_variants');
         Schema::dropIfExists('addresses');
-        Schema::dropIfExists('wishlists');
         Schema::dropIfExists('carts');
     }
 };

@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace Plugins\Wishlist\Models;
 
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
