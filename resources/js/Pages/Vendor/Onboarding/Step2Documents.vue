@@ -43,7 +43,7 @@
                     <!-- NID Upload -->
                     <div class="space-y-6 mb-8">
                         <h2 class="text-xl font-bold text-gray-900 border-b pb-2">National ID (NID)</h2>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">NID Number *</label>
                             <input
@@ -66,7 +66,7 @@
                                     @change="handleFileChange($event, 'nid_front_image')"
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 />
-                                <p class="text-xs text-gray-500 mt-1">JPG, PNG or PDF (max 5MB)</p>
+                                <p class="text-xs text-gray-500 mt-1">JPG, PNG or PDF (max 2MB)</p>
                                 <span v-if="form.errors.nid_front_image" class="text-red-500 text-sm">{{ form.errors.nid_front_image }}</span>
                             </div>
 
@@ -79,7 +79,7 @@
                                     @change="handleFileChange($event, 'nid_back_image')"
                                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 />
-                                <p class="text-xs text-gray-500 mt-1">JPG, PNG or PDF (max 5MB)</p>
+                                <p class="text-xs text-gray-500 mt-1">JPG, PNG or PDF (max 2MB)</p>
                                 <span v-if="form.errors.nid_back_image" class="text-red-500 text-sm">{{ form.errors.nid_back_image }}</span>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                     <!-- Trade License -->
                     <div class="space-y-6 mb-8">
                         <h2 class="text-xl font-bold text-gray-900 border-b pb-2">Trade License</h2>
-                        
+
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Trade License Number *</label>
@@ -124,7 +124,7 @@
                                 @change="handleFileChange($event, 'trade_license_image')"
                                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             />
-                            <p class="text-xs text-gray-500 mt-1">JPG, PNG or PDF (max 5MB)</p>
+                            <p class="text-xs text-gray-500 mt-1">JPG, PNG or PDF (max 2MB)</p>
                             <span v-if="form.errors.trade_license_image" class="text-red-500 text-sm">{{ form.errors.trade_license_image }}</span>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                     <!-- Bank Details -->
                     <div class="space-y-6 mb-8">
                         <h2 class="text-xl font-bold text-gray-900 border-b pb-2">Bank Account Details</h2>
-                        
+
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Bank Name *</label>

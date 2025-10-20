@@ -108,29 +108,41 @@ class OnboardingController extends Controller
     public function storeStep2(Request $request)
     {
         $validated = $request->validate([
-            'nid_front_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'nid_back_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'trade_license_image' => 'required|image|mimes:jpg,jpeg,png,pdf|max:2048',
+            // NID - 2MB limit
+            'nid_number' => 'required|string|max:50',
+            'nid_front_image' => 'required|image|mimes:jpeg,jpg,png,pdf|max:2048',
+            'nid_back_image' => 'required|image|mimes:jpeg,jpg,png,pdf|max:2048',
+
+            // Trade License - 2MB limit
             'trade_license_number' => 'required|string|max:100',
+            'trade_license_image' => 'required|image|mimes:jpeg,jpg,png,pdf|max:2048',
             'trade_license_expiry' => 'required|date|after:today',
+
+            // Bank Details
+            'bank_name' => 'required|string|max:255',
+            'bank_account_number' => 'required|string|max:50',
+            'bank_account_name' => 'required|string|max:255',
+            'bank_branch' => 'required|string|max:255',
+            'bank_routing_number' => 'nullable|string|max:50',
         ]);
 
         $vendor = auth()->user()->vendor;
 
-        // Store documents
+        // Upload NID images
         if ($request->hasFile('nid_front_image')) {
-            $path = $request->file('nid_front_image')->store('vendors/documents', 'public');
-            $validated['nid_front_image'] = $path;
+            $validated['nid_front_image'] = $request->file('nid_front_image')
+                ->store('vendor-documents/nid', 'public');
         }
 
         if ($request->hasFile('nid_back_image')) {
-            $path = $request->file('nid_back_image')->store('vendors/documents', 'public');
-            $validated['nid_back_image'] = $path;
+            $validated['nid_back_image'] = $request->file('nid_back_image')
+                ->store('vendor-documents/nid', 'public');
         }
 
+        // Upload Trade License
         if ($request->hasFile('trade_license_image')) {
-            $path = $request->file('trade_license_image')->store('vendors/documents', 'public');
-            $validated['trade_license_image'] = $path;
+            $validated['trade_license_image'] = $request->file('trade_license_image')
+                ->store('vendor-documents/trade-license', 'public');
         }
 
         $vendor->update([
@@ -257,8 +269,8 @@ class OnboardingController extends Controller
     public function storeComplete(Request $request)
     {
         $validated = $request->validate([
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
-            'banner' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024', // 1MB for logo
+            'banner' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // 2MB for banner
             'bio' => 'nullable|string|max:1000',
             'bank_name' => 'nullable|string|max:100',
             'bank_account_number' => 'nullable|string|max:100',
