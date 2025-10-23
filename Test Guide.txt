@@ -1,0 +1,9 @@
+cd C:\laragon\www\vendora-marketplace
+
+php artisan serve --host=127.0.0.2
+npm run dev
+Visit: http://127.0.0.2:8000
+
+
+
+run-my-commands-12345
